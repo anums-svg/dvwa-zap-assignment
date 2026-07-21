@@ -16,19 +16,20 @@ jobs:
           - 8080:80
 
     steps:
-      - uses: actions/checkout@v4
+     - uses: actions/checkout@v5
 
       - name: Wait for DVWA
         run: sleep 30
 
       - name: Run ZAP Baseline Scan
-        run: |
-          docker run --rm \
-            --network host \
-            ghcr.io/zaproxy/zaproxy:stable \
-            zap-baseline.py \
-            -t http://localhost:8080 \
-            -r zap-report.html
+  run: |
+    docker run --rm \
+      --network host \
+      -v ${{ github.workspace }}:/zap/wrk/:rw \
+      ghcr.io/zaproxy/zaproxy:stable \
+      zap-baseline.py \
+      -t http://localhost:8080 \
+      -r zap-report.html
 
       - name: Upload Report
         uses: actions/upload-artifact@v4
